@@ -1,0 +1,27 @@
+{
+  "name": "webpack-extract-translation-keys-plugin",
+  "version": "1.0.0",
+  "description": "Webpack plugin to extract list of used translation keys from included modules.",
+  "main": "index.js",
+  "scripts": {
+    "prepublish": "npm run lint && npm test",
+    "lint": "eslint .",
+    "test": "mocha --harmony test",
+    "tdd": "mocha --harmony --watch test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com:grassator/webpack-extract-translation-keys.git"
+  },
+  "keywords": [
+    "webpack",
+    "webpack-plugin"
+  ],
+  "author": "Dmitriy Kubyshkin <grassator@gmail.com>",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "mocha": "^2.2.5",
+    "bondjs": "^1.2.2",
+    "eslint": "^0.21.2"
+  }
+}
