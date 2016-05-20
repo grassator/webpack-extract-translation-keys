@@ -4,7 +4,7 @@ Webpack provides an official plugin for managing translation using [i18n-webpack
 
 This plugin serves a similar purposes, but instead of replacing translation keys with actual string values it just collects translation keys allowing you to know exactly which translations are necessary for your client side.
 
-Approach like this also allows to provide dynamically generated translation bundles to the client allowing you to get real-time updates to translation without regenrating whole client side bundle.
+Approach like this also allows to provide dynamically generated translation bundles to the client allowing you to get real-time updates to translation without regenerating whole client side bundle.
 
 ## Usage
 
@@ -47,6 +47,30 @@ If you run `webpack` now, you should get `dist/translation-keys.json` file with 
 ["translation-key-1", "translation-key-2"]
 ```
 
+### Key Mangling
+
+In some applications translation keys are quite long, so for the situtations where you want to save some additional bytes in your application, you can enable mangling during the plugin initialization:
+
+```js
+// ...
+    plugins: [
+        new ExtractTranslationKeysPlugin({
+            mangle: true,
+            functionName: '_TR_',
+            output: path.join(__dirname, 'dist', 'translation-keys.json')
+        })
+    ]
+// ...
+```
+
+This setting changes the behavior of the plugin to replace the key name with a single unicode character.
+
+In order to be able to map back to the original translation key, the format of the plugin output changes from an array to a an object with keys being mangle keys and the values being the original ones:
+
+```json
+{"a": "translation-key-1", "b": "translation-key-2"}
+```
+
 ### Runtime
 
 Since this plugin doesn't replace function with something else it's up to you to provide function that will actually handle translation in the runtime. It can be a globally defined function or you can use `webpack.ProvidePlugin` inside your configuration:
@@ -59,7 +83,7 @@ module.exports = {
             output: path.join(__dirname, 'dist', 'translation-keys.json')
         }),
         new webpack.ProvidePlugin({
-            '__': 'path/to/module/with/translation/function.js')
+            '__': 'path/to/module/with/translation/function.js'
         })
     ]
 
@@ -72,6 +96,7 @@ module.exports = {
 * `functionName` : `__`
 * `done` : `function () {}`
 * `output` : false
+* `mangle` : false
 
 ### Error handling
 
