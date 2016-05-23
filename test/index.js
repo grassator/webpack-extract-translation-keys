@@ -80,7 +80,7 @@ describe('Webpack Extract Translations Keys', function () {
             parserCallback.call(ctx, createExpression([{ type: 'string', value: 'key2' }]));
             parserCallback.call(ctx, createExpression([{ type: 'string', value: 'key3' }]));
 
-            assert.deepEqual(pl.keys, ['key1', 'key2', 'key3']);
+            assert.deepEqual(pl.keys, {'key1': 'key1', 'key2': 'key2', 'key3': 'key3'});
         });
 
         it('should eliminate duplicates when it collecting keys', function () {
@@ -94,7 +94,7 @@ describe('Webpack Extract Translations Keys', function () {
             parserCallback.call(ctx, createExpression([{ type: 'string', value: 'key1' }]));
             parserCallback.call(ctx, createExpression([{ type: 'string', value: 'key2' }]));
 
-            assert.deepEqual(pl.keys, ['key1', 'key2']);
+            assert.deepEqual(pl.keys, {'key1': 'key1', 'key2': 'key2'});
         });
 
         it('should add an error to webpack when translate function does not contain any arguments', function () {
@@ -165,9 +165,9 @@ describe('Webpack Extract Translations Keys', function () {
             parserCallback.call(ctx, createExpression([{ type: 'string', value: 'key3' }]));
 
             assert.deepEqual(pl.keys, {
-                'key1': 'a',
-                'key2': 'b',
-                'key3': 'c'
+                'key1': ' ',
+                'key2': '!',
+                'key3': '#'
             });
         });
     });
