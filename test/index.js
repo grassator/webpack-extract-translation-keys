@@ -31,7 +31,10 @@ function createFakeCompiler() {
 
 function createContext() {
     return {
-        state: { module: { errors: [] } },
+        state: {
+            module: { errors: [] },
+            current: { addDependency: bond() }
+        },
         evaluateExpression: function (descriptor) {
             return {
                 isString: function () {
@@ -52,96 +55,121 @@ function createExpression(args) {
 
 describe('Webpack Extract Translations Keys', function () {
 
-    it('should notify client with a list of keys when compiler is done', function () {
-        const spy = bond();
-        const pl = new Plugin({
-            done: spy
+    describe('normal mode', function () {
+
+        it('should notify client with a list of keys when compiler is done', function () {
+            const spy = bond();
+            const pl = new Plugin({
+                done: spy
+            });
+            const compiler = createFakeCompiler();
+            pl.apply(compiler);
+            assert.equal(compiler.plugin.calledArgs[0][0], 'done');
+            compiler.plugin.calledArgs[0][1]();
+            assert.equal(spy.calledArgs[0][0], pl.keys);
         });
-        const compiler = createFakeCompiler();
-        pl.apply(compiler);
-        assert.equal(compiler.plugin.calledArgs[0][0], 'done');
-        compiler.plugin.calledArgs[0][1]();
-        assert.equal(spy.calledArgs[0][0], pl.keys);
+
+        it('should collect translation keys from the expressions', function () {
+            const pl = new Plugin();
+            const compiler = createFakeCompiler();
+            pl.apply(compiler);
+            const parserCallback = compiler.parser.plugin.calledArgs[0][1];
+            const ctx = createContext();
+
+            parserCallback.call(ctx, createExpression([{ type: 'string', value: 'key1' }]));
+            parserCallback.call(ctx, createExpression([{ type: 'string', value: 'key2' }]));
+            parserCallback.call(ctx, createExpression([{ type: 'string', value: 'key3' }]));
+
+            assert.deepEqual(pl.keys, ['key1', 'key2', 'key3']);
+        });
+
+        it('should eliminate duplicates when it collecting keys', function () {
+            const pl = new Plugin();
+            const compiler = createFakeCompiler();
+            pl.apply(compiler);
+            const parserCallback = compiler.parser.plugin.calledArgs[0][1];
+            const ctx = createContext();
+
+            parserCallback.call(ctx, createExpression([{ type: 'string', value: 'key1' }]));
+            parserCallback.call(ctx, createExpression([{ type: 'string', value: 'key1' }]));
+            parserCallback.call(ctx, createExpression([{ type: 'string', value: 'key2' }]));
+
+            assert.deepEqual(pl.keys, ['key1', 'key2']);
+        });
+
+        it('should add an error to webpack when translate function does not contain any arguments', function () {
+            const pl = new Plugin();
+            const compiler = createFakeCompiler();
+            pl.apply(compiler);
+            const parserCallback = compiler.parser.plugin.calledArgs[0][1];
+            const expr = createExpression([]);
+            const ctx = createContext();
+            parserCallback.call(ctx, expr);
+            assert.equal(ctx.state.module.errors.length, 1);
+            assert(ctx.state.module.errors[0] instanceof NoTranslationKeyError);
+        });
+
+        it('should add an error to webpack when first argument of translate function is not a string', function () {
+            const pl = new Plugin();
+            const compiler = createFakeCompiler();
+            pl.apply(compiler);
+            const parserCallback = compiler.parser.plugin.calledArgs[0][1];
+            const ctx = createContext();
+            const arg = {
+                type: 'variable',
+                name: 'foo',
+                value: 'bar'
+            };
+            parserCallback.call(ctx, createExpression([arg]));
+            assert.equal(ctx.state.module.errors.length, 1);
+            assert(ctx.state.module.errors[0] instanceof DynamicTranslationKeyError);
+        });
+
+        it('should always return `false` from parser callback to allow further processing of expression', function () {
+            const pl = new Plugin();
+            const compiler = createFakeCompiler();
+            pl.apply(compiler);
+            const parserCallback = compiler.parser.plugin.calledArgs[0][1];
+            const ctx = createContext();
+
+            assert.equal(parserCallback.call(ctx, createExpression([])), false);
+
+            const incorrectArg = {
+                type: 'variable',
+                name: 'foo',
+                value: 'bar'
+            };
+            assert.equal(parserCallback.call(ctx, createExpression([incorrectArg])), false);
+
+            const correctArg = {
+                type: 'string',
+                name: 'foo',
+                value: 'bar'
+            };
+            assert.equal(parserCallback.call(ctx, createExpression([correctArg])), false);
+        });
     });
 
-    it('should collect translation keys from the expressions', function () {
-        const pl = new Plugin();
-        const compiler = createFakeCompiler();
-        pl.apply(compiler);
-        const parserCallback = compiler.parser.plugin.calledArgs[0][1];
-        const ctx = createContext();
+    describe('mangling', function () {
+        it('should create mapping from original string to a short one', function () {
+            const pl = new Plugin({
+                mangle: true
+            });
+            const compiler = createFakeCompiler();
+            pl.apply(compiler);
+            const parserCallback = compiler.parser.plugin.calledArgs[0][1];
+            const ctx = createContext();
 
-        parserCallback.call(ctx, createExpression([{ type: 'string', value: 'key1' }]));
-        parserCallback.call(ctx, createExpression([{ type: 'string', value: 'key2' }]));
-        parserCallback.call(ctx, createExpression([{ type: 'string', value: 'key3' }]));
+            parserCallback.call(ctx, createExpression([{ type: 'string', value: 'key1' }]));
+            parserCallback.call(ctx, createExpression([{ type: 'string', value: 'key2' }]));
+            parserCallback.call(ctx, createExpression([{ type: 'string', value: 'key3' }]));
 
-        assert.deepEqual(pl.keys, ['key1', 'key2', 'key3']);
-    });
-
-    it('should eliminate duplicates when it collecting keys', function () {
-        const pl = new Plugin();
-        const compiler = createFakeCompiler();
-        pl.apply(compiler);
-        const parserCallback = compiler.parser.plugin.calledArgs[0][1];
-        const ctx = createContext();
-
-        parserCallback.call(ctx, createExpression([{ type: 'string', value: 'key1' }]));
-        parserCallback.call(ctx, createExpression([{ type: 'string', value: 'key1' }]));
-        parserCallback.call(ctx, createExpression([{ type: 'string', value: 'key2' }]));
-
-        assert.deepEqual(pl.keys, ['key1', 'key2']);
-    });
-
-    it('should add an error to webpack when translate function does not contain any arguments', function () {
-        const pl = new Plugin();
-        const compiler = createFakeCompiler();
-        pl.apply(compiler);
-        const parserCallback = compiler.parser.plugin.calledArgs[0][1];
-        const expr = createExpression([]);
-        const ctx = createContext();
-        parserCallback.call(ctx, expr);
-        assert.equal(ctx.state.module.errors.length, 1);
-        assert(ctx.state.module.errors[0] instanceof NoTranslationKeyError);
-    });
-
-    it('should add an error to webpack when first argument of translate function is not a string', function () {
-        const pl = new Plugin();
-        const compiler = createFakeCompiler();
-        pl.apply(compiler);
-        const parserCallback = compiler.parser.plugin.calledArgs[0][1];
-        const ctx = createContext();
-        const arg = {
-            type: 'variable',
-            name: 'foo',
-            value: 'bar'
-        };
-        parserCallback.call(ctx, createExpression([arg]));
-        assert.equal(ctx.state.module.errors.length, 1);
-        assert(ctx.state.module.errors[0] instanceof DynamicTranslationKeyError);
-    });
-
-    it('should always return `false` from parser callback to allow further processing of expression', function () {
-        const pl = new Plugin();
-        const compiler = createFakeCompiler();
-        pl.apply(compiler);
-        const parserCallback = compiler.parser.plugin.calledArgs[0][1];
-        const ctx = createContext();
-
-        assert.equal(parserCallback.call(ctx, createExpression([])), false);
-
-        const incorrectArg = {
-            type: 'variable',
-            name: 'foo',
-            value: 'bar'
-        };
-        assert.equal(parserCallback.call(ctx, createExpression([incorrectArg])), false);
-
-        const correctArg = {
-            type: 'string',
-            name: 'foo',
-            value: 'bar'
-        };
-        assert.equal(parserCallback.call(ctx, createExpression([correctArg])), false);
+            assert.deepEqual(pl.keys, {
+                'key1': 'a',
+                'key2': 'b',
+                'key3': 'c'
+            });
+        });
     });
 
 });
