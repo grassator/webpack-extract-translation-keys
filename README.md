@@ -44,8 +44,15 @@ console.log(_TR_('translation-key-2'));
 If you run `webpack` now, you should get `dist/translation-keys.json` file with following content:
 
 ```json
-["translation-key-1", "translation-key-2"]
+{
+    "translation-key-1": "translation-key-1",
+    "translation-key-2": "translation-key-2"
+}
 ```
+
+It may seems like a waste to output a map with the keys and values being the same thing, the purpose is to keep the output format consistent with the times when the `mangle` option is enabled.
+
+> **WARNING:** the format of the output without mangling has changed from array to a map since version 2.x. If you want to have old behavior, you can implement it using `done` callback option.
 
 ### Key Mangling
 
@@ -63,13 +70,15 @@ In some applications translation keys are quite long, so for the situtations whe
 // ...
 ```
 
-This setting changes the behavior of the plugin to replace the key name with a single unicode character.
+This setting changes the behavior of the plugin to replace the key name with a minimal ascii-readable string.
 
-In order to be able to map back to the original translation key, the format of the plugin output changes from an array to a an object with keys being mangle keys and the values being the original ones:
+In order to be able to map back to the original translation key, the plugin outputs mapping object with keys being mangle keys and the values being the original ones:
 
 ```json
-{"a": "translation-key-1", "b": "translation-key-2"}
+{" ": "translation-key-1", "!": "translation-key-2"}
 ```
+
+> It's recommended to only enable mangling for production builds, as it makes the debugging harder and also may break hot reloading, depending on your setup.
 
 ### Runtime
 
@@ -94,7 +103,7 @@ module.exports = {
 ### Default options
 
 * `functionName` : `__`
-* `done` : `function () {}`
+* `done` : `function (result) {}`
 * `output` : false
 * `mangle` : false
 

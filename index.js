@@ -20,6 +20,7 @@ var DynamicTranslationKeyError = require('./DynamicTranslationKeyError');
 var NoTranslationKeyError = require('./NoTranslationKeyError');
 var ConstDependency = require('webpack/lib/dependencies/ConstDependency');
 var NullFactory = require('webpack/lib/NullFactory');
+var KeyGenerator = require('./key-generator');
 
 /**
  * @param {Object} options
@@ -35,8 +36,8 @@ function ExtractTranslationPlugin(options) {
 
 ExtractTranslationPlugin.prototype.apply = function(compiler) {
     var mangleKeys = this.mangleKeys;
-    var keys = this.keys = mangleKeys ? Object.create(null) : [];
-    var shortKeyName = ['a'.charCodeAt(0)];
+    var keys = this.keys = Object.create(null);
+    var generator = KeyGenerator.create();
 
     compiler.parser.plugin('call ' + this.functionName, function(expr) {
         var key;
@@ -59,30 +60,18 @@ ExtractTranslationPlugin.prototype.apply = function(compiler) {
 
         var value = expr.arguments[0].value;
 
-        if (mangleKeys) {
-            if (key in keys) {
-                value = keys[key];
-            } else {
-                // After this code point we run into surrogate pair namespace, but
-                // if you have > 55000 keys in your SPA, you have other problems.
-                if (shortKeyName >= 0xD800) {
-                    this.state.module.errors.push(
-                        new Error('Mangling of translation keys is only supported for ~55000 keys')
-                    );
-                    return false;
-                }
-                value = String.fromCharCode(shortKeyName++);
-                keys[key] = value;
+        if (!(key in keys)) {
+            if (mangleKeys) {
+                value = generator.next().value;
             }
+            keys[key] = value;
+        }
 
+        if (mangleKeys) {
             // This replaces the original string with the new string
             var dep = new ConstDependency(JSON.stringify(value), expr.arguments[0].range);
             dep.loc = expr.arguments[0].loc;
             this.state.current.addDependency(dep);
-        } else {
-            if (keys.indexOf(key) === -1) {
-                keys.push(key);
-            }
         }
 
         return false;
