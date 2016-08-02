@@ -170,6 +170,23 @@ describe('Webpack Extract Translations Keys', function () {
                 'key3': '#'
             });
         });
+        it('should correctly replace all the instances of a certain key with the same value', function () {
+            const pl = new Plugin({
+                mangle: true
+            });
+            const compiler = createFakeCompiler();
+            pl.apply(compiler);
+            const parserCallback = compiler.parser.plugin.calledArgs[0][1];
+            const ctx = createContext();
+
+            parserCallback.call(ctx, createExpression([{ type: 'string', value: 'key1' }]));
+            parserCallback.call(ctx, createExpression([{ type: 'string', value: 'key1' }]));
+
+            assert.deepStrictEqual(
+                ctx.state.current.addDependency.calledArgs[0],
+                ctx.state.current.addDependency.calledArgs[1]
+            );
+        });
     });
 
 });

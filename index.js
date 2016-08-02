@@ -69,7 +69,7 @@ ExtractTranslationPlugin.prototype.apply = function(compiler) {
 
         if (mangleKeys) {
             // This replaces the original string with the new string
-            var dep = new ConstDependency(JSON.stringify(value), expr.arguments[0].range);
+            var dep = new ConstDependency(JSON.stringify(keys[key]), expr.arguments[0].range);
             dep.loc = expr.arguments[0].loc;
             this.state.current.addDependency(dep);
         }
