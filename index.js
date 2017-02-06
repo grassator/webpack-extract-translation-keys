@@ -87,7 +87,6 @@ ExtractTranslationPlugin.prototype.apply = function(compiler) {
 
     compiler.plugin('done', function() {
         this.done(this.keys);
-        console.log('keys inside plugin', this.keys);
         if (this.output) {
             require('fs').writeFileSync(this.output, JSON.stringify(this.keys));
         }
