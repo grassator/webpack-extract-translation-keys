@@ -64,7 +64,6 @@ describe('Webpack Extract Translations Keys', function () {
             });
             const compiler = createFakeCompiler();
             pl.apply(compiler);
-            // console.log('compiler and plugin', compiler.plugin.calledArgs);
             assert.equal(compiler.plugin.calledArgs[0][0], 'compilation');
             assert.equal(compiler.plugin.calledArgs[1][0], 'done');
             compiler.plugin.calledArgs[1][1]();
