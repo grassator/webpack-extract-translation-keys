@@ -38,11 +38,13 @@ ExtractTranslationPlugin.prototype.apply = function(compiler) {
     var mangleKeys = this.mangleKeys;
     var keys = this.keys = Object.create(null);
     var generator = KeyGenerator.create();
+    var functionName = this.functionName;
 
     compiler.plugin('compilation', function(compilation, params) {
 
         params.normalModuleFactory.plugin('parser', function(parser) {
-            parser.plugin('call ' + this.functionName, function(expr) {
+
+            parser.plugin('call ' + functionName, function(expr) {
                 var key;
                 if (!expr.arguments.length) {
                     this.state.module.errors.push(
