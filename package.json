@@ -13,7 +13,8 @@
     "index.js",
     "DynamicTranslationKeyError.js",
     "key-generator.js",
-    "NoTranslationKeyError.js"
+    "NoTranslationKeyError.js",
+    "README.md"
   ],
   "repository": {
     "type": "git",
@@ -29,6 +30,7 @@
     "bondjs": "^1.2.2",
     "eslint": "^0.21.2",
     "mocha": "^2.2.5",
-    "webpack": "1.13.1"
+    "tranzlate": "1.2.0",
+    "webpack": "2.1.0-beta.25"
   }
 }

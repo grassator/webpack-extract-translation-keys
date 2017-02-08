@@ -38,43 +38,53 @@ ExtractTranslationPlugin.prototype.apply = function(compiler) {
     var mangleKeys = this.mangleKeys;
     var keys = this.keys = Object.create(null);
     var generator = KeyGenerator.create();
+    var functionName = this.functionName;
 
-    compiler.parser.plugin('call ' + this.functionName, function(expr) {
-        var key;
-        if (!expr.arguments.length) {
-            this.state.module.errors.push(
-                new NoTranslationKeyError(this.state.module, expr)
-            );
-            return false;
-        }
+    compiler.plugin('compilation', function(compilation, params) {
 
-        key = this.evaluateExpression(expr.arguments[0]);
-        if (!key.isString()) {
-            this.state.module.errors.push(
-                new DynamicTranslationKeyError(this.state.module, expr)
-            );
-            return false;
-        }
+        params.normalModuleFactory.plugin('parser', function(parser) {
 
-        key = key.string;
+            parser.plugin('call ' + functionName, function(expr) {
+                var key;
+                if (!expr.arguments.length) {
+                    this.state.module.errors.push(
+                        new NoTranslationKeyError(this.state.module, expr)
+                    );
+                    return false;
+                }
 
-        var value = expr.arguments[0].value;
+                key = this.evaluateExpression(expr.arguments[0]);
+                if (!key.isString()) {
+                    this.state.module.errors.push(
+                        new DynamicTranslationKeyError(this.state.module, expr)
+                    );
+                    return false;
+                }
 
-        if (!(key in keys)) {
-            if (mangleKeys) {
-                value = generator.next().value;
-            }
-            keys[key] = value;
-        }
+                key = key.string;
 
-        if (mangleKeys) {
-            // This replaces the original string with the new string
-            var dep = new ConstDependency(JSON.stringify(keys[key]), expr.arguments[0].range);
-            dep.loc = expr.arguments[0].loc;
-            this.state.current.addDependency(dep);
-        }
+                var value = expr.arguments[0].value;
 
-        return false;
+                if (!(key in keys)) {
+                    if (mangleKeys) {
+                        value = generator.next().value;
+                    }
+                    keys[key] = value;
+                }
+
+                if (mangleKeys) {
+                    // This replaces the original string with the new string
+                    var dep = new ConstDependency(JSON.stringify(keys[key]), expr.arguments[0].range);
+                    dep.loc = expr.arguments[0].loc;
+                    this.state.current.addDependency(dep);
+                }
+
+                return false;
+            });
+        });
+
+        compilation.dependencyFactories.set(ConstDependency, new NullFactory());
+        compilation.dependencyTemplates.set(ConstDependency, new ConstDependency.Template());
     });
 
     compiler.plugin('done', function() {
@@ -83,12 +93,6 @@ ExtractTranslationPlugin.prototype.apply = function(compiler) {
             require('fs').writeFileSync(this.output, JSON.stringify(this.keys));
         }
     }.bind(this));
-
-    compiler.plugin('compilation', function(compilation) {
-        compilation.dependencyFactories.set(ConstDependency, new NullFactory());
-        compilation.dependencyTemplates.set(ConstDependency, new ConstDependency.Template());
-    });
-
 };
 
 module.exports = ExtractTranslationPlugin;
