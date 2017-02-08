@@ -52,8 +52,6 @@ If you run `webpack` now, you should get `dist/translation-keys.json` file with 
 
 It may seems like a waste to output a map with the keys and values being the same thing, the purpose is to keep the output format consistent with the times when the `mangle` option is enabled.
 
-> **WARNING:** the format of the output without mangling has changed from array to a map since version 2.x. If you want to have old behavior, you can implement it using `done` callback option.
-
 ### Key Mangling
 
 In some applications translation keys are quite long, so for the situtations where you want to save some additional bytes in your application, you can enable mangling during the plugin initialization:
@@ -110,6 +108,20 @@ module.exports = {
 ### Error handling
 
 Plugin throw an error if you try to call the translation function without any arguments or with a non-string argument (e.g. a variable).
+
+## Release Notes
+
+### 3.0.0
+
+Support for Webpack 2, if you are using Webpack 1, please install 2.x.x version of this plugin. This can be done by runnning:
+
+```bash
+npm install --save-dev webpack-extract-translation-keys-plugin@2
+```
+
+### 2.0.0
+
+Support for key mangling. The format of the output without mangling has changed from array to a map. If you want to have old behavior, you can implement it using `done` callback option.
 
 ## License
 
