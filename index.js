@@ -32,6 +32,7 @@ function ExtractTranslationPlugin(options) {
     this.done = options.done || function () {};
     this.merge = options.merge || false;
     this.mangleKeys = options.mangle || false;
+    this.newLine = options.newLine || false;
     this.prettyPrint = typeof options.prettyPrint === 'number' ? options.prettyPrint : 0;
     this.output = typeof options.output === 'string'
         ? [options.output] : options.output instanceof Array
@@ -104,7 +105,11 @@ ExtractTranslationPlugin.prototype.apply = function(compiler) {
 
                 this.done(data);
 
-                fs.writeFileSync(file, JSON.stringify(data, null, this.prettyPrint));
+                var result = JSON.stringify(data, null, this.prettyPrint);
+                if (this.newLine) {
+                    result += '\n';
+                }
+                fs.writeFileSync(file, result);
             }.bind(this));
         } else {
             this.done(this.keys);
