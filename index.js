@@ -97,7 +97,7 @@ ExtractTranslationPlugin.prototype.apply = function(compiler) {
             var fs = require('fs');
 
             this.output.forEach(function(file) {
-                var data = this.data;
+                var data = this.keys;
 
                 if (this.merge && fs.existsSync(file)) {
                     data = Object.assign({}, data, require(file));
