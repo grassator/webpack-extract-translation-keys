@@ -31,6 +31,7 @@ function ExtractTranslationPlugin(options) {
     this.functionName = options.functionName || '__';
     this.done = options.done || function () {};
     this.output = typeof options.output === 'string' ? options.output : false;
+    this.merge = options.merge || false;
     this.mangleKeys = options.mangle || false;
 }
 
@@ -89,8 +90,16 @@ ExtractTranslationPlugin.prototype.apply = function(compiler) {
 
     compiler.plugin('done', function() {
         this.done(this.keys);
+
         if (this.output) {
-            require('fs').writeFileSync(this.output, JSON.stringify(this.keys));
+            var data = this.keys;
+            var fs = require('fs');
+
+            if (this.merge && fs.existsSync(this.output)) {
+                data = Object.assign({}, data, require(this.output));
+            }
+
+            fs.writeFileSync(this.output, JSON.stringify(data));
         }
     }.bind(this));
 };
