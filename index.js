@@ -33,6 +33,7 @@ function ExtractTranslationPlugin(options) {
     this.output = typeof options.output === 'string' ? options.output : false;
     this.merge = options.merge || false;
     this.mangleKeys = options.mangle || false;
+    this.prettyPrint = typeof options.prettyPrint === 'number' ? options.prettyPrint : 0;
 }
 
 ExtractTranslationPlugin.prototype.apply = function(compiler) {
@@ -99,7 +100,7 @@ ExtractTranslationPlugin.prototype.apply = function(compiler) {
                 data = Object.assign({}, data, require(this.output));
             }
 
-            fs.writeFileSync(this.output, JSON.stringify(data));
+            fs.writeFileSync(this.output, JSON.stringify(data, null, this.prettyPrint));
         }
     }.bind(this));
 };

@@ -110,6 +110,7 @@ module.exports = {
 * `output` : false
 * `mangle` : false
 * `merge` : false
+* `prettyPrint` : 0
 
 ### Error handling
 
