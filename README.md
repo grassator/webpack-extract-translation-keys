@@ -78,6 +78,11 @@ In order to be able to map back to the original translation key, the plugin outp
 
 > It's recommended to only enable mangling for production builds, as it makes the debugging harder and also may break hot reloading, depending on your setup.
 
+### Key Merging
+
+By default, this plugin will create a new file at the specified output location.
+To update an existing file with newly added keys, you can turn on the `merge` option.
+
 ### Runtime
 
 Since this plugin doesn't replace function with something else it's up to you to provide function that will actually handle translation in the runtime. It can be a globally defined function or you can use `webpack.ProvidePlugin` inside your configuration:
@@ -104,6 +109,9 @@ module.exports = {
 * `done` : `function (result) {}`
 * `output` : false
 * `mangle` : false
+* `merge` : false
+* `newLine` : false
+* `prettyPrint` : 0
 
 ### Error handling
 

@@ -30,8 +30,13 @@ function ExtractTranslationPlugin(options) {
     options = options || {};
     this.functionName = options.functionName || '__';
     this.done = options.done || function () {};
-    this.output = typeof options.output === 'string' ? options.output : false;
+    this.merge = options.merge || false;
     this.mangleKeys = options.mangle || false;
+    this.newLine = options.newLine || false;
+    this.prettyPrint = typeof options.prettyPrint === 'number' ? options.prettyPrint : 0;
+    this.output = typeof options.output === 'string'
+        ? [options.output] : options.output instanceof Array
+            ? options.output : [];
 }
 
 ExtractTranslationPlugin.prototype.apply = function(compiler) {
@@ -88,9 +93,26 @@ ExtractTranslationPlugin.prototype.apply = function(compiler) {
     });
 
     compiler.plugin('done', function() {
-        this.done(this.keys);
-        if (this.output) {
-            require('fs').writeFileSync(this.output, JSON.stringify(this.keys));
+        if (this.output.length) {
+            var fs = require('fs');
+
+            this.output.forEach(function(file) {
+                var data = this.keys;
+
+                if (this.merge && fs.existsSync(file)) {
+                    data = Object.assign({}, data, require(file));
+                }
+
+                this.done(data);
+
+                var result = JSON.stringify(data, null, this.prettyPrint);
+                if (this.newLine) {
+                    result += '\n';
+                }
+                fs.writeFileSync(file, result);
+            }.bind(this));
+        } else {
+            this.done(this.keys);
         }
     }.bind(this));
 };
