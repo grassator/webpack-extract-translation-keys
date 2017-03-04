@@ -92,8 +92,6 @@ ExtractTranslationPlugin.prototype.apply = function(compiler) {
     });
 
     compiler.plugin('done', function() {
-        this.done(this.keys);
-
         if (this.output.length) {
             var fs = require('fs');
 
@@ -104,8 +102,12 @@ ExtractTranslationPlugin.prototype.apply = function(compiler) {
                     data = Object.assign({}, data, require(file));
                 }
 
+                this.done(data);
+
                 fs.writeFileSync(file, JSON.stringify(data, null, this.prettyPrint));
             }.bind(this));
+        } else {
+            this.done(this.keys);
         }
     }.bind(this));
 };
