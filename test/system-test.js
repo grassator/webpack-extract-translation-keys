@@ -28,7 +28,7 @@ describe('Smoke test for the executable script', function() {
                 entry: './test/test-data.js',
                 output: {
                     filename: 'output.js',
-                    path: './test/'
+                    path: path.join(__dirname, '../test/')
                 },
                 plugins: [
                     new Plugin({

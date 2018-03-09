@@ -31,6 +31,6 @@
     "eslint": "^0.21.2",
     "mocha": "^2.2.5",
     "tranzlate": "1.2.0",
-    "webpack": "2.1.0-beta.25"
+    "webpack": "^3.9.1"
   }
 }
