@@ -24,7 +24,17 @@ const NoTranslationKeyError = require('../NoTranslationKeyError');
 
 function createFakeCompiler() {
     return {
-        plugin: bond(),
+        hooks: {
+            compilation: {
+                tap: bond()
+            },
+            done: {
+                tap: bond()
+            },
+            normalModuleFactory: {
+                tap: bond()
+            }
+        },
         parser: { plugin: bond() }
     };
 }
@@ -64,9 +74,9 @@ describe('Webpack Extract Translations Keys', function () {
             });
             const compiler = createFakeCompiler();
             pl.apply(compiler);
-            assert.equal(compiler.plugin.calledArgs[0][0], 'compilation');
-            assert.equal(compiler.plugin.calledArgs[1][0], 'done');
-            compiler.plugin.calledArgs[1][1]();
+            assert.equal(compiler.hooks.compilation.tap.calledArgs[0][0], 'WebpackExtractTranslationKeys');
+            assert.equal(compiler.hooks.done.tap.calledArgs[0][0], 'WebpackExtractTranslationKeys');
+            compiler.hooks.done.tap.calledArgs[0][1]();
             assert.equal(spy.calledArgs[0][0], pl.keys);
         });
 
@@ -74,8 +84,8 @@ describe('Webpack Extract Translations Keys', function () {
             const pl = new Plugin();
             const compiler = createFakeCompiler();
             pl.apply(compiler);
-            compiler.plugin('compilation', function(compilation, params) {
-                params.normalModuleFactory.plugin('parser', function(parser) {
+            compiler.hooks.normalModuleFactory.tap('WebpackExtractTranslationKeys', function(factory) {
+                factory.hooks.parser.for('javascript/auto').tap('WebpackExtractTranslationKeys', function(parser) {
                     const parserCallback = parser.plugin.calledArgs[0][1];
                     const ctx = createContext();
 
@@ -92,8 +102,8 @@ describe('Webpack Extract Translations Keys', function () {
             const pl = new Plugin();
             const compiler = createFakeCompiler();
             pl.apply(compiler);
-            compiler.plugin('compilation', function(compilation, params) {
-                params.normalModuleFactory.plugin('parser', function(parser) {
+            compiler.hooks.normalModuleFactory.tap('WebpackExtractTranslationKeys', function(factory) {
+                factory.hooks.parser.for('javascript/auto').tap('WebpackExtractTranslationKeys', function(parser) {
                     const parserCallback = parser.plugin.calledArgs[0][1];
                     const ctx = createContext();
 
@@ -110,8 +120,8 @@ describe('Webpack Extract Translations Keys', function () {
             const pl = new Plugin();
             const compiler = createFakeCompiler();
             pl.apply(compiler);
-            compiler.plugin('compilation', function(compilation, params) {
-                params.normalModuleFactory.plugin('parser', function(parser) {
+            compiler.hooks.normalModuleFactory.tap('WebpackExtractTranslationKeys', function(factory) {
+                factory.hooks.parser.for('javascript/auto').tap('WebpackExtractTranslationKeys', function(parser) {
                     const parserCallback = parser.plugin.calledArgs[0][1];
                     const expr = createExpression([]);
                     const ctx = createContext();
@@ -126,8 +136,8 @@ describe('Webpack Extract Translations Keys', function () {
             const pl = new Plugin();
             const compiler = createFakeCompiler();
             pl.apply(compiler);
-            compiler.plugin('compilation', function(compilation, params) {
-                params.normalModuleFactory.plugin('parser', function(parser) {
+            compiler.hooks.normalModuleFactory.tap('WebpackExtractTranslationKeys', function(factory) {
+                factory.hooks.parser.for('javascript/auto').tap('WebpackExtractTranslationKeys', function(parser) {
                     const parserCallback = parser.plugin.calledArgs[0][1];
                     const ctx = createContext();
                     const arg = {
@@ -146,8 +156,8 @@ describe('Webpack Extract Translations Keys', function () {
             const pl = new Plugin();
             const compiler = createFakeCompiler();
             pl.apply(compiler);
-            compiler.plugin('compilation', function(compilation, params) {
-                params.normalModuleFactory.plugin('parser', function(parser) {
+            compiler.hooks.normalModuleFactory.tap('WebpackExtractTranslationKeys', function(factory) {
+                factory.hooks.parser.for('javascript/auto').tap('WebpackExtractTranslationKeys', function(parser) {
                     const parserCallback = parser.plugin.calledArgs[0][1];
                     const ctx = createContext();
 
@@ -178,8 +188,8 @@ describe('Webpack Extract Translations Keys', function () {
             });
             const compiler = createFakeCompiler();
             pl.apply(compiler);
-            compiler.plugin('compilation', function(compilation, params) {
-                params.normalModuleFactory.plugin('parser', function(parser) {
+            compiler.hooks.normalModuleFactory.tap('WebpackExtractTranslationKeys', function(factory) {
+                factory.hooks.parser.for('javascript/auto').tap('WebpackExtractTranslationKeys', function(parser) {
                     const parserCallback = parser.plugin.calledArgs[0][1];
                     const ctx = createContext();
 
@@ -202,8 +212,8 @@ describe('Webpack Extract Translations Keys', function () {
             });
             const compiler = createFakeCompiler();
             pl.apply(compiler);
-            compiler.plugin('compilation', function(compilation, params) {
-                params.normalModuleFactory.plugin('parser', function(parser) {
+            compiler.hooks.normalModuleFactory.tap('WebpackExtractTranslationKeys', function(factory) {
+                factory.hooks.parser.for('javascript/auto').tap('WebpackExtractTranslationKeys', function(parser) {
                     const parserCallback = parser.plugin.calledArgs[0][1];
                     const ctx = createContext();
 

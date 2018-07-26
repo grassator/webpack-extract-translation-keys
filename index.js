@@ -40,23 +40,28 @@ ExtractTranslationPlugin.prototype.apply = function(compiler) {
     var generator = KeyGenerator.create();
     var functionName = this.functionName;
 
-    compiler.plugin('compilation', function(compilation, params) {
+    compiler.hooks.compilation.tap('WebpackExtractTranslationKeys', function(compilation) {
+        compilation.dependencyFactories.set(ConstDependency, new NullFactory());
+        compilation.dependencyTemplates.set(ConstDependency, new ConstDependency.Template());
+    });
 
-        params.normalModuleFactory.plugin('parser', function(parser) {
+    compiler.hooks.normalModuleFactory.tap('WebpackExtractTranslationKeys', function(factory) {
 
-            parser.plugin('call ' + functionName, function(expr) {
+        factory.hooks.parser.for('javascript/auto').tap('WebpackExtractTranslationKeys', function(parser) {
+
+            parser.hooks.call.for(functionName).tap('WebpackExtractTranslationKeys', function(expr) {
                 var key;
                 if (!expr.arguments.length) {
-                    this.state.module.errors.push(
-                        new NoTranslationKeyError(this.state.module, expr)
+                    parser.state.module.errors.push(
+                        new NoTranslationKeyError(parser.state.module, expr)
                     );
                     return false;
                 }
 
-                key = this.evaluateExpression(expr.arguments[0]);
+                key = parser.evaluateExpression(expr.arguments[0]);
                 if (!key.isString()) {
-                    this.state.module.errors.push(
-                        new DynamicTranslationKeyError(this.state.module, expr)
+                    parser.state.module.errors.push(
+                        new DynamicTranslationKeyError(parser.state.module, expr)
                     );
                     return false;
                 }
@@ -76,18 +81,15 @@ ExtractTranslationPlugin.prototype.apply = function(compiler) {
                     // This replaces the original string with the new string
                     var dep = new ConstDependency(JSON.stringify(keys[key]), expr.arguments[0].range);
                     dep.loc = expr.arguments[0].loc;
-                    this.state.current.addDependency(dep);
+                    parser.state.current.addDependency(dep);
                 }
 
                 return false;
             });
         });
-
-        compilation.dependencyFactories.set(ConstDependency, new NullFactory());
-        compilation.dependencyTemplates.set(ConstDependency, new ConstDependency.Template());
     });
 
-    compiler.plugin('done', function() {
+    compiler.hooks.done.tap('WebpackExtractTranslationKeys', function() {
         this.done(this.keys);
         if (this.output) {
             require('fs').writeFileSync(this.output, JSON.stringify(this.keys));
