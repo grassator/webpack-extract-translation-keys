@@ -1,6 +1,6 @@
 {
   "name": "webpack-extract-translation-keys-plugin",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "Webpack plugin to extract list of used translation keys from included modules.",
   "main": "index.js",
   "scripts": {

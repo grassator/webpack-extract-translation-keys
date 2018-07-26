@@ -6,6 +6,10 @@ This plugin serves a similar purposes, but instead of replacing translation keys
 
 Approach like this also allows to provide dynamically generated translation bundles to the client allowing you to get real-time updates to translation without regenerating whole client side bundle.
 
+## Changelog
+
+* **4.0.0**: Compatibility with Webpack 4
+
 ## Usage
 
 ### Configuration
