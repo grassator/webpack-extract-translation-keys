@@ -4,14 +4,14 @@
         "es6": true
     },
     "rules": {
-        "brace-style": [2, "1tbs"],
-        "comma-style": [2, "last"],
-        "indent": [2, 4, { "indentSwitchCase": true }],
-        "no-constant-condition": 2,
-        "semi": [2, "always"],
-        "space-after-keywords": [2, "always"],
-        "space-before-blocks": [2, "always"],
-        "global-strict": [2, "always"],
-        "quotes": [2, "single"]
+        "brace-style": ["error", "1tbs"],
+        "comma-style": ["error", "last"],
+        "indent":  ["error", 4, { "SwitchCase": 1 }],
+        "no-constant-condition": "error",
+        "semi": ["error", "always"],
+        "keyword-spacing": ["error", { "after": true }],
+        "space-before-blocks": ["error", "always"],
+        "strict": ["error", "global"],
+        "quotes": ["error", "single"]
     }
 }

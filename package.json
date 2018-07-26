@@ -4,10 +4,10 @@
   "description": "Webpack plugin to extract list of used translation keys from included modules.",
   "main": "index.js",
   "scripts": {
-    "prepublish": "npm run lint && npm test",
+    "prepublishOnly": "npm run lint && npm test",
     "lint": "eslint .",
-    "test": "mocha --harmony test",
-    "tdd": "mocha --harmony --watch test"
+    "test": "mocha test",
+    "tdd": "mocha --watch test"
   },
   "files": [
     "index.js",
@@ -28,8 +28,8 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "bondjs": "^1.2.2",
-    "eslint": "^0.21.2",
-    "mocha": "^2.2.5",
+    "eslint": "^5.2.0",
+    "mocha": "^5.2.0",
     "tranzlate": "1.2.0",
     "webpack": "^4.16.2"
   }
