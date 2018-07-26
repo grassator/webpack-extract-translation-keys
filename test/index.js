@@ -34,8 +34,7 @@ function createFakeCompiler() {
             normalModuleFactory: {
                 tap: bond()
             }
-        },
-        parser: { plugin: bond() }
+        }
     };
 }
 
