@@ -6,10 +6,6 @@ This plugin serves a similar purposes, but instead of replacing translation keys
 
 Approach like this also allows to provide dynamically generated translation bundles to the client allowing you to get real-time updates to translation without regenerating whole client side bundle.
 
-## Changelog
-
-* **4.0.0**: Compatibility with Webpack 4
-
 ## Usage
 
 ### Configuration
@@ -115,9 +111,17 @@ Plugin throw an error if you try to call the translation function without any ar
 
 ## Release Notes
 
+### 4.0.0
+
+Support for Webpack 4, if you are using Webpack 3, please install 3.x.x version of this plugin. This can be done by running:
+
+```bash
+npm install --save-dev webpack-extract-translation-keys-plugin@3
+```
+
 ### 3.0.0
 
-Support for Webpack 2, if you are using Webpack 1, please install 2.x.x version of this plugin. This can be done by runnning:
+Support for Webpack 2, if you are using Webpack 1, please install 2.x.x version of this plugin. This can be done by running:
 
 ```bash
 npm install --save-dev webpack-extract-translation-keys-plugin@2
