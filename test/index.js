@@ -76,7 +76,7 @@ describe('Webpack Extract Translations Keys', function () {
             assert.equal(compiler.hooks.compilation.tap.calledArgs[0][0], 'WebpackExtractTranslationKeys');
             assert.equal(compiler.hooks.done.tap.calledArgs[0][0], 'WebpackExtractTranslationKeys');
             compiler.hooks.done.tap.calledArgs[0][1]();
-            assert.equal(spy.calledArgs[0][0], pl.keys);
+            assert.equal(spy.calledArgs[0][1], pl.keys);
         });
 
         it('should collect translation keys from the expressions', function () {

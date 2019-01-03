@@ -52,6 +52,21 @@ If you run `webpack` now, you should get `dist/translation-keys.json` file with 
 
 It may seems like a waste to output a map with the keys and values being the same thing, the purpose is to keep the output format consistent with the times when the `mangle` option is enabled.
 
+## Output
+
+if output string contains [name], one output file will be created per entry key at corresponding output
+
+
+```js
+// ...
+    plugins: [
+        new ExtractTranslationKeysPlugin({
+            output: path.join(__dirname, 'dist', '[name]/translation-keys.json')
+        })
+    ]
+// ...
+```
+
 ### Key Mangling
 
 In some applications translation keys are quite long, so for the situtations where you want to save some additional bytes in your application, you can enable mangling during the plugin initialization:

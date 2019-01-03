@@ -33,6 +33,7 @@
     "bondjs": "^1.2.2",
     "eslint": "^5.2.0",
     "mocha": "^5.2.0",
+    "rimraf": "^2.6.3",
     "tranzlate": "1.2.0",
     "webpack": "^4.16.2"
   }
