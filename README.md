@@ -126,6 +126,10 @@ Plugin throw an error if you try to call the translation function without any ar
 
 ## Release Notes
 
+### 5.0.0
+
+Support for multiple output for multiple entries with [name] inside the output string. If [name] is not present, only one output file will be created for all entries
+
 ### 4.0.0
 
 Support for Webpack 4, if you are using Webpack 3, please install 3.x.x version of this plugin. This can be done by running:
