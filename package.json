@@ -30,6 +30,7 @@
     "webpack": "^4.0.0"
   },
   "devDependencies": {
+    "@types/webpack": "^4.4.22",
     "bondjs": "^1.2.2",
     "eslint": "^5.2.0",
     "mocha": "^5.2.0",
