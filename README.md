@@ -85,10 +85,10 @@ In some applications translation keys are quite long, so for the situtations whe
 
 This setting changes the behavior of the plugin to replace the key name with a minimal ascii-readable string.
 
-In order to be able to map back to the original translation key, the plugin outputs mapping object with keys being mangle keys and the values being the original ones:
+In order to be able to map back to the original translation key, the plugin outputs mapping object with keys being original keys and the values being the mangled ones:
 
 ```json
-{" ": "translation-key-1", "!": "translation-key-2"}
+{ "translation-key-1": " ", "translation-key-2": "!" }
 ```
 
 > It's recommended to only enable mangling for production builds, as it makes the debugging harder and also may break hot reloading, depending on your setup.
