@@ -1,6 +1,6 @@
 {
   "name": "webpack-extract-translation-keys-plugin",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "description": "Webpack plugin to extract list of used translation keys from included modules.",
   "main": "index.js",
   "scripts": {
@@ -11,6 +11,7 @@
   },
   "files": [
     "index.js",
+    "index.d.ts",
     "DynamicTranslationKeyError.js",
     "key-generator.js",
     "NoTranslationKeyError.js",
