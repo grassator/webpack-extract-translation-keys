@@ -1,5 +1,6 @@
 # Build
 dist
+test/output.js.LICENSE.txt
 
 # IDEs
 .idea
