@@ -126,6 +126,14 @@ Plugin throw an error if you try to call the translation function without any ar
 
 ## Release Notes
 
+### 6.0.0
+
+Support for Webpack 5, if you are using Webpack 4, please install 5.x.x version of this plugin. This can be done by running:
+
+```bash
+npm install --save-dev webpack-extract-translation-keys-plugin@5
+```
+
 ### 5.0.0
 
 Support for multiple output for multiple entries with [name] inside the output string. If [name] is not present, only one output file will be created for all entries
