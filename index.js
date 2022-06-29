@@ -78,10 +78,12 @@ ExtractTranslationPlugin.prototype.apply = function(compiler) {
         reverseEntryPoints = Object.keys(entryPoints).reduce(
             (reverseEntryPointsAcc, name) => {
                 let entryPoint = entryPoints[name];
+                entryPoint = ('import' in entryPoint) ? entryPoint.import : entryPoint;
                 if (!Array.isArray(entryPoint)) {
                     entryPoint = [entryPoint];
                 }
                 entryPoint.reduce((acc, curr) => {
+                    if (typeof curr !== 'string') throw new TypeError('UNREACHABLE');
                     acc[curr] = name;
                     return acc;
                 }, reverseEntryPointsAcc);
