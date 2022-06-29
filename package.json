@@ -31,12 +31,12 @@
     "webpack": "^5.0.0"
   },
   "devDependencies": {
-    "@types/webpack": "^4.4.22",
-    "bondjs": "^1.2.2",
-    "eslint": "^5.2.0",
-    "mocha": "^5.2.0",
-    "rimraf": "^2.6.3",
-    "tranzlate": "1.2.0",
+    "@types/webpack": "^5.28.0",
+    "bondjs": "^2.0.0",
+    "eslint": "^8.18.0",
+    "mocha": "^10.0.0",
+    "rimraf": "^3.0.2",
+    "tranzlate": "^1.2.0",
     "webpack": "^5.73.0"
   }
 }
