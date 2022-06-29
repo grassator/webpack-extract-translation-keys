@@ -3,7 +3,7 @@ env: CI=true
 sudo: false
 
 node_js:
-  - 8
+  - 16
 
 cache:
   directories:
