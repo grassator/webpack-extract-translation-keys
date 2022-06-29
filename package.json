@@ -28,7 +28,7 @@
   "author": "Dmitriy Kubyshkin <grassator@gmail.com>",
   "license": "Apache-2.0",
   "peerDependencies": {
-    "webpack": "^4.0.0"
+    "webpack": "^5.0.0"
   },
   "devDependencies": {
     "@types/webpack": "^4.4.22",
@@ -37,6 +37,6 @@
     "mocha": "^5.2.0",
     "rimraf": "^2.6.3",
     "tranzlate": "1.2.0",
-    "webpack": "^4.16.2"
+    "webpack": "^5.73.0"
   }
 }
