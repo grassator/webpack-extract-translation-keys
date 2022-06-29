@@ -1,7 +1,8 @@
-import { Plugin } from "webpack";
+import { WebpackPluginInstance, Compiler } from "webpack";
 
-declare class ExtractTranslationKeysPlugin extends Plugin {
+declare class ExtractTranslationKeysPlugin implements WebpackPluginInstance {
     constructor(options?: ExtractTranslationKeysPlugin.Options);
+    apply: (compiler: Compiler) => void;
 }
 
 declare namespace ExtractTranslationKeysPlugin {
