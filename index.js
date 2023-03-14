@@ -25,12 +25,12 @@ const KeyGenerator = require('./key-generator');
 
 // resolve entry for given module, we try to exit early with rawRequest in case of multiple modules issuing request
 function resolveEntry(module, reverseEntryPoints) {
+    const moduleGraph = module.parser.state.compilation.moduleGraph;
     let issuer = module;
     if (reverseEntryPoints[issuer.rawRequest]) {
         return issuer.rawRequest;
     }
-    while (issuer.issuer) {
-        issuer = issuer.issuer;
+    while (issuer = moduleGraph.getIssuer(issuer)) {
         if (reverseEntryPoints[issuer.rawRequest]) {
             return issuer.rawRequest;
         }
