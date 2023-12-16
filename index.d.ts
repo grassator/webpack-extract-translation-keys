@@ -10,7 +10,7 @@ declare namespace ExtractTranslationKeysPlugin {
         functionName?: string;
         done?: Function;
         output?: string | false;
-        mangle?: boolean;
+        mangle?: boolean | Function;
     }
 }
 

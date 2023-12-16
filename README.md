@@ -71,7 +71,7 @@ if output string contains [name], one output file will be created per entry key 
 
 ### Key Mangling
 
-In some applications translation keys are quite long, so for the situtations where you want to save some additional bytes in your application, you can enable mangling during the plugin initialization:
+In some applications translation keys are quite long, so for the situations where you want to save some additional bytes in your application, you can enable mangling during the plugin initialization:
 
 ```js
 // ...
@@ -94,6 +94,24 @@ In order to be able to map back to the original translation key, the plugin outp
 ```
 
 > It's recommended to only enable mangling for production builds, as it makes the debugging harder and also may break hot reloading, depending on your setup.
+
+Starting from version 6.0, it is also possible use custom keys instead of the minimal ascii-readable string. You just need to define `mangle` as a function instead of `true`. For example, this code will use the sha-1 as the key:
+
+```js
+var crypto = require('crypto')
+
+// ...
+    plugins: [
+        new ExtractTranslationKeysPlugin({
+            mangle: function(string) {
+                return crypto.createHash('sha1').update(string, 'binary').digest('hex')
+            },
+            functionName: '_TR_',
+            output: path.join(__dirname, 'dist', 'translation-keys.json')
+        })
+    ]
+// ...
+```
 
 ### Runtime
 
