@@ -139,8 +139,8 @@ ExtractTranslationPlugin.prototype.apply = function(compiler) {
 
                             const entryKeys = outputMap.get(entry) || {};
                             if (!(key in entryKeys)) {
-                                if (typeof mangleKeys =="function") {
-                                    value = mangleKeys(key)
+                                if (typeof mangleKeys =='function') {
+                                    value = mangleKeys(key);
 
                                 } else if (mangleKeys) {
                                     value = generator.next().value;
