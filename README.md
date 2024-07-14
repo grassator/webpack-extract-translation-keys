@@ -128,9 +128,13 @@ Plugin throw an error if you try to call the translation function without any ar
 
 ## Release Notes
 
+### 6.2.0
+
+Support concatenated strings as keys: `__("a" + "b" + "c")`.
+
 ### 6.1.0
 
-Support concatenated strings as keys: `__("a" + "b" + "c")`
+Fix a deprecation warning.
 
 ### 6.0.0
 
