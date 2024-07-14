@@ -128,6 +128,10 @@ Plugin throw an error if you try to call the translation function without any ar
 
 ## Release Notes
 
+### 6.1.0
+
+Support concatenated strings as keys: `__("a" + "b" + "c")`
+
 ### 6.0.0
 
 Support for Webpack 5, if you are using Webpack 4, please install 5.x.x version of this plugin. This can be done by running:
