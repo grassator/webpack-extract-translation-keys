@@ -114,8 +114,8 @@ ExtractTranslationPlugin.prototype.apply = function(compiler) {
                                 return false;
                             }
 
-                            key = parser.evaluateExpression(expr.arguments[0]);
-                            if (!key.isString()) {
+                            key = parser.evaluateExpression(expr.arguments[0]).string;
+                            if (key === undefined) {
                                 parser.state.module.errors.push(
                                     new DynamicTranslationKeyError(
                                         parser.state.module,
@@ -125,9 +125,7 @@ ExtractTranslationPlugin.prototype.apply = function(compiler) {
                                 return false;
                             }
 
-                            key = key.string;
-
-                            let value = expr.arguments[0].value;
+                            let value = key;
 
                             const entry =
                                 reverseEntryPoints[

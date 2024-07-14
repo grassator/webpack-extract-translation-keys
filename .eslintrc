@@ -13,5 +13,6 @@
         "space-before-blocks": ["error", "always"],
         "strict": ["error", "global"],
         "quotes": ["error", "single"]
-    }
+    },
+    "ignorePatterns": ["test/data/*"]
 }
